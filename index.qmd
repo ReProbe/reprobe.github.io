@@ -207,7 +207,7 @@ format:
     </div>
 
     <!-- Fig 2: Best-of-N and Beam Search illustration -->
-    <div class="method-overview" style="margin-top:48px;">
+    <div class="method-overview" style="margin-top:48px; max-width:78%; margin-left:auto; margin-right:auto;">
       <img src="images/fig2.png"
            alt="Illustration of Best-of-N and Beam Search test-time scaling methods">
     </div>
