@@ -250,6 +250,11 @@ section:nth-child(even) { background: var(--white); }
   line-height: 1.8;
 }
 .affiliations sup { color: #a78bfa !important; }
+.author-note {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+}
+.author-note sup { color: #a78bfa !important; font-size: 0.75em; }
 
 /* Buttons */
 .btn-group {
