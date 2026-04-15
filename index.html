@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>ReProbe</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+
+
+<link href="./images/favicon.png" rel="icon" type="image/png">
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-html-5276476b5bdb9cfe1f92c505466e0bf3.min.css" rel="stylesheet" append-hash="true" data-mode="light">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+
+
+
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="container hero-inner">
+
+    <div class="venue-badge venue-badge-accepted">
+      <i class="fa-solid fa-award"></i>&nbsp; ACL 2026 · Long Paper
+    </div>
+
+    <h1>
+      Efficient Test-Time Scaling<br>
+      via <span class="highlight">Probing Internal States</span><br>
+      of Large Language Models
+    </h1>
+
+    <p class="hero-tagline">
+      ReProbe replaces bulky Process Reward Models with a &lt;10M-parameter probe
+      that reads directly from the LLM's own <strong>hidden states</strong> — achieving comparable
+      or better step-level verification at a fraction of the cost.
+    </p>
+
+    <!-- Authors -->
+    <div class="authors">
+      <span class="author">Jingwei Ni<sup>1</sup></span>
+      <span class="author">Ekaterina Fadeeva<sup>1</sup></span>
+      <span class="author">Tianyi Wu<sup>1</sup></span>
+      <span class="author">Mubashara Akhtar<sup>3</sup></span>
+      <span class="author">Jiaheng Zhang<sup>2</sup></span>
+      <span class="author">Elliott Ash<sup>1</sup></span>
+      <span class="author">Markus Leippold<sup>4</sup></span>
+      <span class="author">Timothy Baldwin<sup>3</sup></span>
+      <span class="author">See-Kiong Ng<sup>2</sup></span>
+      <span class="author">Artem Shelmanov<sup>3</sup></span>
+      <span class="author">Mrinmaya Sachan<sup>1</sup></span>
+    </div>
+    <div class="affiliations">
+      <sup>1</sup> ETH Zürich &nbsp;·&nbsp;
+      <sup>2</sup> National University of Singapore &nbsp;·&nbsp;
+      <sup>3</sup> MBZUAI &nbsp;·&nbsp;
+      <sup>4</sup> University of Zurich &nbsp;·&nbsp;
+      University of Melbourne
+    </div>
+
+    <!-- Action buttons -->
+    <div class="btn-group">
+      <a href="https://arxiv.org/abs/2511.06209" class="btn btn-primary" target="_blank">
+        <i class="fa-solid fa-file-pdf"></i> Paper
+      </a>
+      <a href="https://github.com/cant-access-rediska0123/uncertainty4reasoning" class="btn btn-outline" target="_blank">
+        <i class="fa-brands fa-github"></i> Code
+      </a>
+    </div>
+
+    <!-- Model checkpoints -->
+    <div class="checkpoint-row">
+      <span class="checkpoint-label"><i class="fa-solid fa-cube"></i> Model Checkpoints</span>
+      <div class="checkpoint-pills">
+        <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-8B_self_anno" class="checkpoint-pill" target="_blank">
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-8B · self-anno
+        </a>
+        <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-8B_DeepSeek_anno" class="checkpoint-pill" target="_blank">
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-8B · DeepSeek-anno
+        </a>
+        <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-1.7B_natural_reasoning_GPT-OSS-120B_anno" class="checkpoint-pill" target="_blank">
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-1.7B · thinking
+        </a>
+        <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-32B_GPT-OSS-120B_anno" class="checkpoint-pill" target="_blank">
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-32B · thinking
+        </a>
+      </div>
+    </div>
+
+    <!-- Teaser figure: Fig 1 — overview of training + inference pipeline -->
+    <div class="teaser">
+      <img src="images/fig1.png" alt="ReProbe overview: LLM generates CoTs, annotator labels steps, ReProbe trains on frozen LLM internal states, then monitors at inference.">
+    </div>
+    <p class="fig-caption">
+      ReProbe training &amp; inference overview. An annotator LLM labels step correctness on CoT traces
+      (left). ReProbe is trained on internal signals from the <em>frozen</em> target LLM (middle).
+      At inference, the tiny probe (&lt;10M params) replaces a 1.5–8B PRM (right).
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     TL;DR + ABSTRACT
+     ============================================================ -->
+<section class="tldr-section">
+  <div class="container">
+
+    <div class="tldr-card">
+      <div class="label">TL;DR</div>
+      <p>
+        We train a tiny (&lt;10M param) probe on LLM-internal signals
+        (hidden states, attention, logits) to verify reasoning steps,
+        matching or beating PRMs that are <strong>750–810× larger</strong>,
+        with better out-of-domain generalization and up to <strong>25× faster</strong> inference.
+      </p>
+    </div>
+
+    <p class="abstract-text">
+      Test-time scaling improves LLM reasoning by searching over multiple candidate
+      trajectories, but requires a reliable step-level verifier. Existing Process Reward
+      Models (PRMs) are large, expensive to train, and often fail to generalize beyond
+      their training domain. <strong>ReProbe</strong> offers a lightweight alternative:
+      instead of training a separate LLM-scale verifier, we attach a small probe directly
+      to the frozen target LLM, extracting its hidden states as rich supervisory signals. Trained with either
+      a larger annotator LLM or a self-supervised approach, ReProbe achieves competitive
+      step-level correctness prediction across mathematics, planning, and question-answering
+      benchmarks, while being orders of magnitude smaller and faster.
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     KEY STATS
+     ============================================================ -->
+<section class="stats-section">
+  <div class="container">
+    <div class="section-label">By the numbers</div>
+    <div class="section-title">Why ReProbe?</div>
+
+    <div class="stats-grid">
+
+      <div class="stat-card">
+        <div class="stat-number">&lt;10<span class="stat-unit">M</span></div>
+        <div class="stat-label">Parameters — vs. 1.5–8B for competing PRMs</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">810<span class="stat-unit">×</span></div>
+        <div class="stat-label">Smaller than the largest PRM it outperforms</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">25<span class="stat-unit">×</span></div>
+        <div class="stat-label">Faster beam search vs. state-of-the-art PRMs</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Domains tested — math, planning, QA (incl. out-of-domain)</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     METHOD
+     ============================================================ -->
+<section class="method-section">
+  <div class="container">
+
+    <div class="section-label">Approach</div>
+    <div class="section-title">How ReProbe Works</div>
+    <p class="section-subtitle">
+      A frozen LLM's internal signals are all you need — no PRM-scale model required.
+    </p>
+
+    <!-- Pipeline steps -->
+    <div class="pipeline">
+
+      <div class="pipeline-step">
+        <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
+        <div class="step-num">Step 1</div>
+        <h4 class="anchored">LLM Generates</h4>
+        <p>Target LLM produces multi-step chain-of-thought traces. Its weights remain <em>frozen</em> throughout.</p>
+      </div>
+
+      <div class="pipeline-step">
+        <div class="step-icon"><i class="fa-solid fa-signal"></i></div>
+        <div class="step-num">Step 2</div>
+        <h4 class="anchored">Extract Hidden States</h4>
+        <p>The LLM's internal hidden states are captured per token at each reasoning step boundary.</p>
+      </div>
+
+      <div class="pipeline-step">
+        <div class="step-icon"><i class="fa-solid fa-microchip"></i></div>
+        <div class="step-num">Step 3</div>
+        <h4 class="anchored">Probe Predicts</h4>
+        <p>A tiny transformer encoder aggregates signals and outputs a step correctness probability.</p>
+      </div>
+
+      <div class="pipeline-step">
+        <div class="step-icon"><i class="fa-solid fa-trophy"></i></div>
+        <div class="step-num">Step 4</div>
+        <h4 class="anchored">Scale at Test Time</h4>
+        <p>Scores guide Best-of-N selection or Beam Search to steer toward the best final answer.</p>
+      </div>
+
+    </div>
+
+    <!-- Fig 2: Best-of-N and Beam Search illustration -->
+    <div class="method-overview" style="margin-top:48px;">
+      <img src="images/fig2.png" alt="Illustration of Best-of-N and Beam Search test-time scaling methods">
+    </div>
+    <p class="fig-caption" style="text-align:center; margin-top:12px;">
+      <strong>Two test-time scaling strategies.</strong>
+      Best-of-N samples N complete trajectories and selects the highest-scoring one.
+      Beam Search maintains the top-B partial trajectories at each step, pruning with ReProbe scores.
+    </p>
+
+    <!-- Component cards -->
+    <div class="components-grid" style="margin-top:48px;">
+
+      <div class="component-card">
+        <div class="comp-icon"><i class="fa-solid fa-layer-group"></i></div>
+        <h4 class="anchored">Hidden State Features</h4>
+        <p>Internal hidden states from the frozen LLM — extracted without any modification to the base model.</p>
+      </div>
+
+      <div class="component-card">
+        <div class="comp-icon"><i class="fa-solid fa-robot"></i></div>
+        <h4 class="anchored">Self-Supervised Training</h4>
+        <p>Labels come from a larger annotator LLM (DeepSeek-R1) or fully self-supervised — no human annotation needed.</p>
+      </div>
+
+      <div class="component-card">
+        <div class="comp-icon"><i class="fa-solid fa-code-branch"></i></div>
+        <h4 class="anchored">Two Search Strategies</h4>
+        <p>Best-of-N picks the highest-scoring complete trajectory; Beam Search steers generation step by step.</p>
+      </div>
+
+      <div class="component-card">
+        <div class="comp-icon"><i class="fa-solid fa-plug"></i></div>
+        <h4 class="anchored">Plug-and-Play</h4>
+        <p>No changes to the base LLM. ReProbe attaches as a lightweight adapter — swap models without retraining.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     RESULTS
+     ============================================================ -->
+<section class="results-section">
+  <div class="container">
+
+    <div class="section-label">Experiments · Step-level PR-AUC</div>
+    <div class="section-title">Results at a Glance</div>
+    <p class="section-subtitle">
+      ReProbe (hidden states) vs. best competing PRM across three model families and three domains.
+      All values are PR-AUC averaged within each domain group.
+    </p>
+
+    <!-- Legend -->
+    <div class="legend" style="display:flex; gap:20px; margin-top:28px; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:7px; font-size:0.82rem; font-weight:600;">
+        <div style="width:14px; height:14px; border-radius:3px; background:var(--brand);"></div>
+        ReProbe (Hidden States)
+      </div>
+      <div style="display:flex; align-items:center; gap:7px; font-size:0.82rem; font-weight:500; color:var(--muted);">
+        <div style="width:14px; height:14px; border-radius:3px; background:#CBD5E1;"></div>
+        Best PRM baseline
+      </div>
+      <div style="display:flex; align-items:center; gap:7px; font-size:0.82rem; font-weight:500; color:var(--muted);">
+        <div style="width:14px; height:14px; border-radius:3px; background:#E2E8F0;"></div>
+        Best UQ baseline
+      </div>
+    </div>
+
+    <!-- 3 model cards -->
+    <div class="model-results-grid" style="margin-top:24px;">
+
+      <!-- ── Qwen3-8B ── -->
+      <div class="model-result-card">
+        <div class="model-result-header">
+          <div>
+            <div class="model-name">Qwen3-8B</div>
+            <div class="model-meta">Main · Self-annotated</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-8B_self_anno" class="card-hf-link" target="_blank" title="Self-anno checkpoint">
+              <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF">
+            </a>
+            <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-8B_DeepSeek_anno" class="card-hf-link" target="_blank" title="DeepSeek-anno checkpoint">
+              <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF">
+              <span style="font-size:0.62rem;opacity:0.7;">DS</span>
+            </a>
+            <div class="avg-badge">Avg 0.604</div>
+          </div>
+        </div>
+        <div class="model-result-body">
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">📐</span> Math
+              <span class="domain-tag tag-id">ID</span>
+            </div>
+            <!-- MATH avg: (0.558+0.673)/2 ≈ 0.616 (using MATH+GSM8k) -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:69%;"></div></div>
+                <span class="val">.558</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:73%; background:#CBD5E1;"></div></div>
+                <span class="val">.586</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best UQ</span>
+                <div class="bar-wrap"><div class="bar" style="width:32%; background:#E2E8F0;"></div></div>
+                <span class="val">.257</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">♟</span> Planning
+              <span class="domain-tag tag-ood">OOD</span>
+            </div>
+            <!-- avg Trips+Meetings+Calendar: ReProbe=.801, PRM=.734, UQ=.556 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:100%;"></div></div>
+                <span class="val">.801</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:92%; background:#CBD5E1;"></div></div>
+                <span class="val">.734</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best UQ</span>
+                <div class="bar-wrap"><div class="bar" style="width:70%; background:#E2E8F0;"></div></div>
+                <span class="val">.556</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">💬</span> QA
+              <span class="domain-tag tag-ood">OOD</span>
+            </div>
+            <!-- avg StrQA+SciQA: ReProbe=.467, PRM=.383, UQ=.188 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:58%;"></div></div>
+                <span class="val">.467</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:48%; background:#CBD5E1;"></div></div>
+                <span class="val">.383</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best UQ</span>
+                <div class="bar-wrap"><div class="bar" style="width:23%; background:#E2E8F0;"></div></div>
+                <span class="val">.188</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Qwen3-1.7B Native Thinking ── -->
+      <div class="model-result-card">
+        <div class="model-result-header">
+          <div>
+            <div class="model-name">Qwen3-1.7B</div>
+            <div class="model-meta">Native Thinking · Self-annotated</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-1.7B_natural_reasoning_GPT-OSS-120B_anno" class="card-hf-link" target="_blank" title="HF checkpoint">
+              <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF">
+            </a>
+            <div class="avg-badge">Avg 0.495</div>
+          </div>
+        </div>
+        <div class="model-result-body">
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">📐</span> Math
+              <span class="domain-tag tag-id">ID</span>
+            </div>
+            <!-- MATH=.417 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:52%;"></div></div>
+                <span class="val">.417</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:31%; background:#CBD5E1;"></div></div>
+                <span class="val">.248</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">♟</span> Planning
+              <span class="domain-tag tag-ood">OOD</span>
+            </div>
+            <!-- avg Trips+Meetings+Calendar: ReProbe=.653, PRM=.607 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:82%;"></div></div>
+                <span class="val">.653</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:76%; background:#CBD5E1;"></div></div>
+                <span class="val">.607</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">💬</span> QA
+              <span class="domain-tag tag-ood">OOD</span>
+            </div>
+            <!-- avg StrQA+SciQA: ReProbe=.411, PRM=.288 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:51%;"></div></div>
+                <span class="val">.411</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:36%; background:#CBD5E1;"></div></div>
+                <span class="val">.288</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Phi-4 ── -->
+      <div class="model-result-card">
+        <div class="model-result-header">
+          <div>
+            <div class="model-name">Phi-4</div>
+            <div class="model-meta">DeepSeek-annotated</div>
+          </div>
+          <div class="avg-badge">Avg 0.497</div>
+        </div>
+        <div class="model-result-body">
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">📐</span> Math
+              <span class="domain-tag tag-id">ID</span>
+            </div>
+            <!-- MATH=.442 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:55%;"></div></div>
+                <span class="val">.442</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:59%; background:#CBD5E1;"></div></div>
+                <span class="val">.474</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">♟</span> Planning
+              <span class="domain-tag tag-ood">OOD</span>
+            </div>
+            <!-- avg Trips+Meetings+Calendar: ReProbe=.686, PRM=.664 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:86%;"></div></div>
+                <span class="val">.686</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:83%; background:#CBD5E1;"></div></div>
+                <span class="val">.664</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">💬</span> QA
+              <span class="domain-tag tag-ood">OOD</span>
+            </div>
+            <!-- avg StrQA+SciQA: ReProbe=.393, PRM=.342 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:49%;"></div></div>
+                <span class="val">.393</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:43%; background:#CBD5E1;"></div></div>
+                <span class="val">.342</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Qwen3-32B Native Thinking ── -->
+      <div class="model-result-card">
+        <div class="model-result-header">
+          <div>
+            <div class="model-name">Qwen3-32B</div>
+            <div class="model-meta">Native Thinking · GPT-OSS-annotated</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-32B_GPT-OSS-120B_anno" class="card-hf-link" target="_blank" title="HF checkpoint">
+              <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF">
+            </a>
+            <div class="avg-badge">Avg 0.585</div>
+          </div>
+        </div>
+        <div class="model-result-body">
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">📐</span> Math
+              <span class="domain-tag tag-id">ID</span>
+            </div>
+            <!-- MATH=.676, PRM best (Qwen2.5-Math-PRM-7B)=.668 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:85%;"></div></div>
+                <span class="val">.676</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:84%; background:#CBD5E1;"></div></div>
+                <span class="val">.668</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">♟</span> Planning
+              <span class="domain-tag tag-ood">OOD</span>
+            </div>
+            <!-- avg Trips+Meetings+Calendar: ReProbe=.728, PRM=.677 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:91%;"></div></div>
+                <span class="val">.728</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:85%; background:#CBD5E1;"></div></div>
+                <span class="val">.677</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">💬</span> QA
+              <span class="domain-tag tag-ood">OOD</span>
+            </div>
+            <!-- avg StrQA+SciQA: ReProbe=.303, PRM=.314 -->
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:38%;"></div></div>
+                <span class="val">.303</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:39%; background:#CBD5E1;"></div></div>
+                <span class="val">.314</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /model-results-grid -->
+
+    <p style="font-size:0.78rem; color:var(--muted); margin-top:16px; text-align:center;">
+      Planning avg: Trips + Meetings + Calendar. &nbsp;QA avg: StrQA + SciQA. &nbsp;Math shown as MATH benchmark.
+      Full tables in <a href="https://arxiv.org/abs/2511.06209" target="_blank">the paper</a>.
+    </p>
+
+    <!-- ── Divider ── -->
+    <div style="border-top:1px solid var(--border); margin:48px 0 40px;"></div>
+
+    <div class="section-label">Test-Time Scaling · Accuracy (%)</div>
+    <div class="section-title" style="font-size:1.5rem;">Best-of-N &amp; Beam Search</div>
+    <p class="section-subtitle" style="margin-bottom:28px;">
+      Qwen3-8B accuracy when using ReProbe (hidden states) scores to select answers.
+      Averages across domain groups; full per-dataset breakdowns in the paper.
+    </p>
+
+    <!-- Legend (reuse colours) -->
+    <div class="legend" style="display:flex; gap:20px; margin-bottom:24px; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:7px; font-size:0.82rem; font-weight:600;">
+        <div style="width:14px; height:14px; border-radius:3px; background:var(--brand);"></div>
+        ReProbe (Hidden States)
+      </div>
+      <div style="display:flex; align-items:center; gap:7px; font-size:0.82rem; font-weight:500; color:var(--muted);">
+        <div style="width:14px; height:14px; border-radius:3px; background:#CBD5E1;"></div>
+        Best PRM baseline
+      </div>
+      <div style="display:flex; align-items:center; gap:7px; font-size:0.82rem; font-weight:500; color:var(--muted);">
+        <div style="width:14px; height:14px; border-radius:3px; background:#E2E8F0;"></div>
+        pass@1 / no search
+      </div>
+    </div>
+
+    <div class="tts-grid">
+
+      <!-- ══ Best-of-N ══ -->
+      <div class="model-result-card">
+        <div class="model-result-header" style="background:linear-gradient(135deg,#1e3a5f 0%,#1e40af 100%);">
+          <div>
+            <div class="model-name">Best-of-N &nbsp;<span style="font-size:0.75rem;font-weight:500;opacity:0.7;">(N = 10)</span></div>
+            <div class="model-meta">Qwen3-8B · self-annotated</div>
+          </div>
+          <div class="avg-badge" style="background:rgba(59,130,246,0.35);border-color:rgba(147,197,253,0.4);color:#bfdbfe;">Overall 62.3%</div>
+        </div>
+        <div class="model-result-body">
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">📐</span> Math
+              <span class="domain-tag tag-id">ID</span>
+              <span style="font-size:0.68rem;color:var(--muted);margin-left:auto;">avg MATH+GSM8k+ProofNet</span>
+            </div>
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:89.7%;"></div></div>
+                <span class="val">89.7</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:89.2%;background:#CBD5E1;"></div></div>
+                <span class="val">89.2</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">pass@1</span>
+                <div class="bar-wrap"><div class="bar" style="width:87.4%;background:#E2E8F0;"></div></div>
+                <span class="val">87.4</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">♟</span> Planning
+              <span class="domain-tag tag-ood">OOD</span>
+              <span style="font-size:0.68rem;color:var(--muted);margin-left:auto;">avg Trips+Meetings+Cal.</span>
+            </div>
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:15.0%;"></div></div>
+                <span class="val">15.0</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:13.1%;background:#CBD5E1;"></div></div>
+                <span class="val">13.1</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">pass@1</span>
+                <div class="bar-wrap"><div class="bar" style="width:12.4%;background:#E2E8F0;"></div></div>
+                <span class="val">12.4</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">💬</span> QA
+              <span class="domain-tag tag-ood">OOD</span>
+              <span style="font-size:0.68rem;color:var(--muted);margin-left:auto;">avg StrQA+SciQA</span>
+            </div>
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:92.0%;"></div></div>
+                <span class="val">92.0</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:91.6%;background:#CBD5E1;"></div></div>
+                <span class="val">91.6</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">pass@1</span>
+                <div class="bar-wrap"><div class="bar" style="width:89.8%;background:#E2E8F0;"></div></div>
+                <span class="val">89.8</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /BoN card -->
+
+      <!-- ══ Beam Search ══ -->
+      <div class="model-result-card">
+        <div class="model-result-header" style="background:linear-gradient(135deg,#1a3a2a 0%,#166534 100%);">
+          <div>
+            <div class="model-name">Beam Search &nbsp;<span style="font-size:0.75rem;font-weight:500;opacity:0.7;">(B=5, N=5)</span></div>
+            <div class="model-meta">Qwen3-8B · DeepSeek-annotated &nbsp;·&nbsp; 2.6–25× faster than PRM</div>
+          </div>
+          <div class="avg-badge" style="background:rgba(22,163,74,0.3);border-color:rgba(134,239,172,0.4);color:#bbf7d0;">Overall 76.6%</div>
+        </div>
+        <div class="model-result-body">
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">📐</span> Math
+              <span class="domain-tag tag-id">ID</span>
+              <span style="font-size:0.68rem;color:var(--muted);margin-left:auto;">avg MATH+GSM8k+ProofNet</span>
+            </div>
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:93.7%;"></div></div>
+                <span class="val">93.7</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:88.5%;background:#CBD5E1;"></div></div>
+                <span class="val">88.5</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">♟</span> Planning
+              <span class="domain-tag tag-ood">OOD</span>
+              <span style="font-size:0.68rem;color:var(--muted);margin-left:auto;">avg Trips+Meetings+Cal.</span>
+            </div>
+            <div class="comparison">
+              <!-- ReProbe HS DeepSeek: (13.4+48.0+96.7)/3 = 52.7 -->
+              <!-- PRM800k: (13.1+45.0+86.7)/3 = 48.3 -->
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:52.7%;"></div></div>
+                <span class="val">52.7</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:48.3%;background:#CBD5E1;"></div></div>
+                <span class="val">48.3</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="domain-group">
+            <div class="domain-label">
+              <span class="domain-icon-sm">💬</span> QA
+              <span class="domain-tag tag-ood">OOD</span>
+              <span style="font-size:0.68rem;color:var(--muted);margin-left:auto;">StrQA</span>
+            </div>
+            <div class="comparison">
+              <div class="comparison-row">
+                <span class="method-name">ReProbe</span>
+                <div class="bar-wrap"><div class="bar" style="width:96.7%;"></div></div>
+                <span class="val">96.7</span>
+              </div>
+              <div class="comparison-row">
+                <span class="method-name">Best PRM</span>
+                <div class="bar-wrap"><div class="bar" style="width:91.2%;background:#CBD5E1;"></div></div>
+                <span class="val">91.2</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /Beam Search card -->
+
+    </div><!-- /tts-grid -->
+
+    <p style="font-size:0.78rem; color:var(--muted); margin-top:16px; text-align:center;">
+      Best PRM = Qwen2.5-Math-7B-PRM800K (BoN) / Qwen2.5-Math-7B-PRM800K (Beam Search).
+      SciQA omitted from Beam Search (not evaluated).
+      Full tables in <a href="https://arxiv.org/abs/2511.06209" target="_blank">the paper</a>.
+    </p>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     GENERALIZATION
+     ============================================================ -->
+<section style="background:var(--bg); padding:80px 0;">
+  <div class="container">
+
+    <div class="section-label">Generalization</div>
+    <div class="section-title">Domains Evaluated</div>
+    <p class="section-subtitle">
+      Trained only on mathematics, ReProbe transfers to planning and QA — domains
+      where PRMs collapse out-of-distribution.
+    </p>
+
+    <div class="gen-grid">
+
+      <div class="gen-card">
+        <div class="domain-icon icon-math"><i class="fa-solid fa-calculator"></i></div>
+        <h4 class="anchored">Mathematics</h4>
+        <span class="tag tag-id">In-Domain</span>
+        <p>GSM8K, MATH500, MathBench. Step annotations from PRM800K training set.</p>
+      </div>
+
+      <div class="gen-card">
+        <div class="domain-icon icon-plan"><i class="fa-solid fa-map-signs"></i></div>
+        <h4 class="anchored">Planning</h4>
+        <span class="tag tag-ood">Out-of-Domain</span>
+        <p>Blocksworld &amp; logistics tasks requiring multi-step sequential reasoning — never seen at train time.</p>
+      </div>
+
+      <div class="gen-card">
+        <div class="domain-icon icon-qa"><i class="fa-solid fa-comments"></i></div>
+        <h4 class="anchored">Question Answering</h4>
+        <span class="tag tag-ood">Out-of-Domain</span>
+        <p>ScienceQA, CommonsenseQA — diverse knowledge domains requiring factual and causal reasoning.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     ANALYSIS
+     ============================================================ -->
+<section style="background:var(--white); padding:80px 0;">
+  <div class="container">
+
+    <div class="section-label">Analysis</div>
+    <div class="section-title">Deeper Insights</div>
+    <p class="section-subtitle">
+      ReProbe is robust, composable, and architecturally well-motivated.
+    </p>
+
+    <div class="analysis-grid" style="margin-top:40px;">
+
+      <!-- Fig 6: Chain length robustness -->
+      <div class="result-card" style="grid-column: 1 / -1;">
+        <div class="result-card-header">
+          <i class="fa-solid fa-chart-bar"></i> Robust Across Reasoning Chain Lengths
+        </div>
+        <div class="result-card-body" style="padding:24px; display:flex; gap:32px; align-items:center; flex-wrap:wrap;">
+          <img src="images/fig6.png" alt="ROC-AUC across bins of reasoning chain length for ReProbe and PRM models" style="flex:1; min-width:280px; border-radius:8px; display:block;">
+          <div style="flex:1; min-width:220px;">
+            <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:10px;" class="anchored">Stable at Any Chain Length</h4>
+            <p style="font-size:0.85rem; color:var(--muted); line-height:1.7;">
+              ReProbe maintains consistent ROC-AUC across all reasoning chain length bins —
+              including very long chains where external PRMs lose accuracy.
+              Internal hidden states provide a reliable signal regardless of how many steps the model has taken.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table 4: Synergy with PRMs -->
+      <div class="result-card">
+        <div class="result-card-header" style="background:#7C3AED;">
+          <i class="fa-solid fa-plug-circle-plus"></i> Complementary to PRMs
+        </div>
+        <div class="result-card-body" style="padding:20px;">
+          <p style="font-size:0.82rem; color:var(--muted); margin-bottom:16px; line-height:1.6;">
+            Combining ReProbe scores with a PRM (product of scores) consistently outperforms either alone — they capture complementary signals.
+          </p>
+          
+<table class="caption-top" data-quarto-postprocess="true" style="width:100%; font-size:0.78rem; border-collapse:collapse;">
+<thead>
+<tr class="header" style="border-bottom:2px solid var(--border);">
+<th data-quarto-table-cell-role="th" style="text-align: left; padding: 6px 8px; font-weight: 700; color: var(--text);">Method</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; padding: 6px 8px; color: var(--muted);">MATH</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; padding: 6px 8px; color: var(--muted);">GSM8k</th>
+<th data-quarto-table-cell-role="th" style="text-align: center; padding: 6px 8px; color: var(--muted);">ProofNet</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" style="border-bottom:1px solid var(--border);">
+<td style="padding: 7px 8px; color: var(--muted)">PRM only</td>
+<td style="text-align: center; padding: 7px 8px;">.586</td>
+<td style="text-align: center; padding: 7px 8px;">.613</td>
+<td style="text-align: center; padding: 7px 8px;">.301</td>
+</tr>
+<tr class="even" style="border-bottom:1px solid var(--border);">
+<td style="padding: 7px 8px; color: var(--muted)">ReProbe only</td>
+<td style="text-align: center; padding: 7px 8px;">.529</td>
+<td style="text-align: center; padding: 7px 8px;">.594</td>
+<td style="text-align: center; padding: 7px 8px;">.260</td>
+</tr>
+<tr class="odd" style="background:#F5F3FF; font-weight:700;">
+<td style="padding: 7px 8px; color: var(--brand)">ReProbe + PRM</td>
+<td style="text-align: center; padding: 7px 8px; color: var(--brand);">.613</td>
+<td style="text-align: center; padding: 7px 8px; color: var(--brand);">.674</td>
+<td style="text-align: center; padding: 7px 8px; color: var(--brand);">.318</td>
+</tr>
+</tbody>
+</table>
+
+          <p style="font-size:0.73rem; color:var(--muted); margin-top:10px;">PR-AUC on Math (ID). ReProbe + PRM = product of scores.</p>
+        </div>
+      </div>
+
+      <!-- Table 9: Architecture ablation -->
+      <div class="result-card">
+        <div class="result-card-header" style="background:#0F766E;">
+          <i class="fa-solid fa-layer-group"></i> Step-Level Aggregation Matters
+        </div>
+        <div class="result-card-body" style="padding:20px;">
+          <p style="font-size:0.82rem; color:var(--muted); margin-bottom:16px; line-height:1.6;">
+            Step-level aggregation (aggregating token states within a step) consistently outperforms token-level probing, which in turn beats simple linear probes.
+          </p>
+          <div class="comparison" style="margin-bottom:4px;">
+            <div class="comparison-row">
+              <span class="method-name" style="width:110px; font-size:0.76rem;">Step-level</span>
+              <div class="bar-wrap"><div class="bar" style="width:100%; background:#0F766E;"></div></div>
+              <span class="val" style="font-weight:800; color:#0F766E;">.604</span>
+            </div>
+            <div class="comparison-row">
+              <span class="method-name" style="width:110px; font-size:0.76rem;">Token-level</span>
+              <div class="bar-wrap"><div class="bar" style="width:96%; background:#CBD5E1;"></div></div>
+              <span class="val">.580</span>
+            </div>
+            <div class="comparison-row">
+              <span class="method-name" style="width:110px; font-size:0.76rem;">Linear Probe</span>
+              <div class="bar-wrap"><div class="bar" style="width:84%; background:#E2E8F0;"></div></div>
+              <span class="val">.509</span>
+            </div>
+          </div>
+          <p style="font-size:0.73rem; color:var(--muted); margin-top:10px;">Overall PR-AUC (Qwen3-8B, all datasets). Higher = better step detection.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     MODEL COMPARISON TABLE
+     ============================================================ -->
+<section class="table-section">
+  <div class="container">
+
+    <div class="section-label">Efficiency</div>
+    <div class="section-title">ReProbe vs. Process Reward Models</div>
+    <p class="section-subtitle">
+      Dramatically smaller and faster, with no loss in verification quality.
+    </p>
+
+    
+<table class="comparison-table caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Method</th>
+<th data-quarto-table-cell-role="th">Params</th>
+<th data-quarto-table-cell-role="th">Relative Size</th>
+<th data-quarto-table-cell-role="th">Training Signal</th>
+<th data-quarto-table-cell-role="th">OOD Generalization</th>
+<th data-quarto-table-cell-role="th">Speed (Beam Search)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Skywork-PRM-7B</td>
+<td>7B</td>
+<td>700–800×</td>
+<td>Human labels + MC rollouts</td>
+<td>Poor</td>
+<td>1× (baseline)</td>
+</tr>
+<tr class="even">
+<td>Math-Shepherd-8B</td>
+<td>8B</td>
+<td>810×</td>
+<td>Monte-Carlo rollouts</td>
+<td>Poor</td>
+<td>1×</td>
+</tr>
+<tr class="odd">
+<td>PRM (1.5B)</td>
+<td>1.5B</td>
+<td>150×</td>
+<td>Human labels</td>
+<td>Limited</td>
+<td>~2.6×</td>
+</tr>
+<tr class="highlight-row even">
+<td><strong>ReProbe (Ours)</strong> <span class="badge-ours">ours</span></td>
+<td><strong>&lt;10M</strong></td>
+<td><strong>1×</strong></td>
+<td>Self-supervised / LLM annotator</td>
+<td><span class="badge-best">Best</span></td>
+<td><strong>2.6–25×</strong></td>
+</tr>
+</tbody>
+</table>
+
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     BIBTEX
+     ============================================================ -->
+<section class="bibtex-section">
+  <div class="container" style="max-width:780px;">
+
+    <!-- Paper card -->
+    <div class="cite-paper-card">
+      <div class="cite-paper-badge">
+        <i class="fa-solid fa-award"></i> ACL 2026 · Long Paper
+      </div>
+      <div class="cite-paper-title">
+        Efficient Test-Time Scaling of Multi-Step Reasoning<br>by Probing Internal States of Large Language Models
+      </div>
+      <div class="cite-paper-authors">
+        Jingwei Ni, Ekaterina Fadeeva, Tianyi Wu, Mubashara Akhtar, Jiaheng Zhang,
+        Elliott Ash, Markus Leippold, Timothy Baldwin, See-Kiong Ng, Artem Shelmanov, Mrinmaya Sachan
+      </div>
+      <div class="cite-paper-links">
+        <a href="https://arxiv.org/abs/2511.06209" target="_blank"><i class="fa-solid fa-file-pdf"></i> arXiv:2511.06209</a>
+        <a href="https://github.com/cant-access-rediska0123/uncertainty4reasoning" target="_blank"><i class="fa-brands fa-github"></i> Code</a>
+      </div>
+    </div>
+
+    <!-- BibTeX block -->
+    <div class="bibtex-label">
+      <i class="fa-solid fa-quote-left"></i> BibTeX
+      <button class="copy-btn" onclick="
+        navigator.clipboard.writeText(document.getElementById('bibtex').innerText);
+        this.textContent='✓ Copied';
+        setTimeout(()=>this.textContent='Copy',1800);
+      ">Copy</button>
+    </div>
+    <div class="bibtex-block">
+      <pre id="bibtex">@inproceedings{ni2025reprobe,
+  title     = {Efficient Test-Time Scaling of Multi-Step Reasoning
+               by Probing Internal States of Large Language Models},
+  author    = {Ni, Jingwei and Fadeeva, Ekaterina and Wu, Tianyi and
+               Akhtar, Mubashara and Zhang, Jiaheng and Ash, Elliott and
+               Leippold, Markus and Baldwin, Timothy and Ng, See-Kiong and
+               Shelmanov, Artem and Sachan, Mrinmaya},
+  booktitle = {Proceedings of the 64th Annual Meeting of the
+               Association for Computational Linguistics},
+  year      = {2026}
+}</pre>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <p>
+    ReProbe · ETH Zürich, NUS, MBZUAI, University of Zurich, University of Melbourne ·
+    <a href="https://arxiv.org/abs/2511.06209" target="_blank">arXiv:2511.06209</a>
+  </p>
+  <p style="margin-top:8px; font-size:0.75rem; opacity:0.6;">
+    Website built with <a href="https://quarto.org" target="_blank">Quarto</a>
+  </p>
+</footer>
+
+
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+  tabsets.forEach(function(tabset) {
+    const tabby = new Tabby('#' + tabset.id);
+  });
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'light-border',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+
+
+
+
+</body></html>
