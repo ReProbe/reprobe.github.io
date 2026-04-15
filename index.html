@@ -108,18 +108,32 @@ ul.task-list li input[type="checkbox"] {
       <span class="checkpoint-label"><i class="fa-solid fa-cube"></i> Model Checkpoints</span>
       <div class="checkpoint-pills">
         <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-8B_self_anno" class="checkpoint-pill" target="_blank">
-          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-8B · self-anno
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF">
+          <span class="pill-name">JingweiNi/ReProbe_Qwen3-8B_self_anno</span>
+          <span class="pill-desc">Qwen3-8B CoT ReProbe · self-annotated data</span>
         </a>
         <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-8B_DeepSeek_anno" class="checkpoint-pill" target="_blank">
-          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-8B · DeepSeek-anno
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF">
+          <span class="pill-name">JingweiNi/ReProbe_Qwen3-8B_DeepSeek_anno</span>
+          <span class="pill-desc">Qwen3-8B CoT ReProbe · DeepSeek-R1 annotated data</span>
         </a>
         <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-1.7B_natural_reasoning_GPT-OSS-120B_anno" class="checkpoint-pill" target="_blank">
-          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-1.7B · thinking
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF">
+          <span class="pill-name">JingweiNi/ReProbe_Qwen3-1.7B_natural_reasoning_GPT-OSS-120B_anno</span>
+          <span class="pill-desc">Qwen3-1.7B native reasoning ReProbe · GPT-OSS-120B annotated data</span>
         </a>
         <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-32B_GPT-OSS-120B_anno" class="checkpoint-pill" target="_blank">
-          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-32B · thinking
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF">
+          <span class="pill-name">JingweiNi/ReProbe_Qwen3-32B_GPT-OSS-120B_anno</span>
+          <span class="pill-desc">Qwen3-32B CoT ReProbe · GPT-OSS-120B annotated data</span>
         </a>
       </div>
+      <p class="checkpoint-note">
+        <i class="fa-solid fa-circle-info"></i>
+        To load a checkpoint, first set up the target LLM following the
+        <a href="https://github.com/ReProbe/ReProbe" target="_blank">GitHub instructions</a>,
+        then attach the probe weights as described in the loading guide.
+      </p>
     </div>
 
     <!-- Teaser figure: Fig 1 — overview of training + inference pipeline -->
