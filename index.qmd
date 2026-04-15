@@ -65,18 +65,19 @@ format:
       <span class="checkpoint-label"><i class="fa-solid fa-cube"></i> Model Checkpoints</span>
       <div class="checkpoint-pills">
         <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-8B_self_anno" class="checkpoint-pill" target="_blank">
-          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-8B · self-anno
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-8B CoT ReProbe (self-annotated)
         </a>
         <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-8B_DeepSeek_anno" class="checkpoint-pill" target="_blank">
-          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-8B · DeepSeek-anno
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-8B CoT ReProbe (DeepSeek-R1 annotated)
         </a>
         <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-1.7B_natural_reasoning_GPT-OSS-120B_anno" class="checkpoint-pill" target="_blank">
-          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-1.7B · thinking
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-1.7B native reasoning ReProbe (GPT-OSS-120B annotated)
         </a>
         <a href="https://huggingface.co/JingweiNi/ReProbe_Qwen3-32B_GPT-OSS-120B_anno" class="checkpoint-pill" target="_blank">
-          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-32B · thinking
+          <img src="https://huggingface.co/front/assets/huggingface_logo-noborder.svg" class="hf-logo" alt="HF"> Qwen3-32B CoT ReProbe (GPT-OSS-120B annotated)
         </a>
       </div>
+      <p style="font-size:0.75rem; color:var(--muted); margin-top:8px;">Load checkpoints following the <a href="https://github.com/cant-access-rediska0123/uncertainty4reasoning">GitHub</a> guidance for the target LLMs.</p>
     </div>
 
     <!-- Teaser figure: Fig 1 — overview of training + inference pipeline -->
@@ -207,7 +208,7 @@ format:
     </div>
 
     <!-- Fig 2: Best-of-N and Beam Search illustration -->
-    <div class="method-overview" style="margin-top:48px; max-width:78%; margin-left:auto; margin-right:auto;">
+    <div class="method-overview" style="margin-top:48px;">
       <img src="images/fig2.png"
            alt="Illustration of Best-of-N and Beam Search test-time scaling methods">
     </div>
