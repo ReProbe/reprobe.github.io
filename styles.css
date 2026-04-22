@@ -3,9 +3,9 @@
    ============================================================ */
 
 :root {
-  --brand:       #6C63FF;
-  --brand-dark:  #4B44CC;
-  --brand-light: #EEF0FF;
+  --brand:       #059669;
+  --brand-dark:  #047857;
+  --brand-light: #ECFDF5;
   --accent:      #FF6B6B;
   --text:        #1A1A2E;
   --muted:       #6B7280;
@@ -150,8 +150,8 @@ section:nth-child(even) { background: var(--white); }
    HERO
    ============================================================ */
 .hero {
-  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%) !important;
-  background-color: #1e1b4b !important; /* fallback */
+  background: linear-gradient(135deg, #022c22 0%, #064e3b 50%, #065f46 100%) !important;
+  background-color: #064e3b !important; /* fallback */
   color: #ffffff !important;
   padding: 100px 0 80px;
   position: relative;
@@ -167,7 +167,7 @@ section:nth-child(even) { background: var(--white); }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(108,99,255,0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 30% 40%, rgba(5,150,105,0.35) 0%, transparent 70%),
     radial-gradient(ellipse 40% 40% at 70% 60%, rgba(255,107,107,0.2) 0%, transparent 70%);
   pointer-events: none;
 }
@@ -180,15 +180,15 @@ section:nth-child(even) { background: var(--white); }
 
 .venue-badge {
   display: inline-block;
-  background: rgba(108,99,255,0.35);
-  border: 1px solid rgba(108,99,255,0.6);
+  background: rgba(5,150,105,0.35);
+  border: 1px solid rgba(5,150,105,0.6);
   border-radius: 99px;
   padding: 5px 18px;
   font-size: 0.8rem;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #C4BFFF;
+  color: #6EE7B7;
   margin-bottom: 28px;
 }
 .venue-badge-accepted {
@@ -214,7 +214,7 @@ section:nth-child(even) { background: var(--white); }
 }
 
 .hero h1 span.highlight {
-  background: linear-gradient(90deg, #a78bfa, #818cf8, #6C63FF);
+  background: linear-gradient(90deg, #6EE7B7, #34D399, #059669);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -241,7 +241,7 @@ section:nth-child(even) { background: var(--white); }
   color: rgba(255,255,255,0.92) !important;
   font-weight: 500;
 }
-.author sup { color: #a78bfa !important; font-size: 0.7em; }
+.author sup { color: #6EE7B7 !important; font-size: 0.7em; }
 
 .affiliations {
   color: rgba(255,255,255,0.6) !important;
@@ -249,12 +249,12 @@ section:nth-child(even) { background: var(--white); }
   margin-bottom: 40px;
   line-height: 1.8;
 }
-.affiliations sup { color: #a78bfa !important; }
+.affiliations sup { color: #6EE7B7 !important; }
 .author-note {
   font-size: 0.75rem;
   color: rgba(255,255,255,0.5);
 }
-.author-note sup { color: #a78bfa !important; font-size: 0.75em; }
+.author-note sup { color: #6EE7B7 !important; font-size: 0.75em; }
 
 /* Buttons */
 .btn-group {
@@ -280,7 +280,7 @@ section:nth-child(even) { background: var(--white); }
 .btn-primary {
   background: var(--brand);
   color: #ffffff !important;
-  box-shadow: 0 4px 20px rgba(108,99,255,0.45);
+  box-shadow: 0 4px 20px rgba(5,150,105,0.45);
 }
 .btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); }
 .btn-outline {
@@ -356,8 +356,8 @@ section:nth-child(even) { background: var(--white); }
    KEY STATS
    ============================================================ */
 .stats-section {
-  background: linear-gradient(135deg, #0f0c29 0%, #302b63 100%) !important;
-  background-color: #1e1b4b !important;
+  background: linear-gradient(135deg, #022c22 0%, #064e3b 100%) !important;
+  background-color: #064e3b !important;
   padding: 70px 0;
 }
 .stats-section .section-label {
@@ -389,8 +389,8 @@ section:nth-child(even) { background: var(--white); }
 .stat-number {
   font-size: 2.8rem;
   font-weight: 800;
-  color: #a78bfa !important;           /* solid fallback */
-  background: linear-gradient(135deg, #a78bfa, #818cf8);
+  color: #6EE7B7 !important;           /* solid fallback */
+  background: linear-gradient(135deg, #6EE7B7, #34D399);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -400,8 +400,8 @@ section:nth-child(even) { background: var(--white); }
 /* If gradient clip is unsupported, fall back to solid colour */
 @supports not (-webkit-background-clip: text) {
   .stat-number {
-    color: #a78bfa !important;
-    -webkit-text-fill-color: #a78bfa !important;
+    color: #6EE7B7 !important;
+    -webkit-text-fill-color: #6EE7B7 !important;
     background: none;
   }
 }
@@ -454,7 +454,7 @@ section:nth-child(even) { background: var(--white); }
 .method-overview img { width: 100%; display: block; }
 .method-overview .placeholder {
   background: var(--brand-light);
-  border: 2px dashed rgba(108,99,255,0.3);
+  border: 2px dashed rgba(5,150,105,0.3);
   border-radius: 16px;
   padding: 60px 40px;
   color: var(--muted);
@@ -545,7 +545,7 @@ section:nth-child(even) { background: var(--white); }
   transition: box-shadow 0.2s, transform 0.2s;
 }
 .component-card:hover {
-  box-shadow: 0 8px 30px rgba(108,99,255,0.12);
+  box-shadow: 0 8px 30px rgba(5,150,105,0.12);
   transform: translateY(-2px);
 }
 .component-card .comp-icon {
@@ -676,12 +676,12 @@ section:nth-child(even) { background: var(--white); }
   transition: box-shadow 0.2s, transform 0.2s;
 }
 .model-result-card:hover {
-  box-shadow: 0 10px 32px rgba(108,99,255,0.12);
+  box-shadow: 0 10px 32px rgba(5,150,105,0.12);
   transform: translateY(-2px);
 }
 
 .model-result-header {
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  background: linear-gradient(135deg, #022c22 0%, #064e3b 100%);
   padding: 16px 20px;
   display: flex;
   align-items: center;
@@ -700,13 +700,13 @@ section:nth-child(even) { background: var(--white); }
   margin-top: 2px;
 }
 .avg-badge {
-  background: rgba(108,99,255,0.4);
-  border: 1px solid rgba(167,139,250,0.4);
+  background: rgba(5,150,105,0.4);
+  border: 1px solid rgba(52,211,153,0.4);
   border-radius: 99px;
   padding: 4px 12px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: #c4bfff;
+  color: #6EE7B7;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -806,7 +806,7 @@ section:nth-child(even) { background: var(--white); }
 }
 .comparison-table tbody tr:hover { background: var(--brand-light); }
 .comparison-table tbody tr.highlight-row {
-  background: #F5F3FF;
+  background: #F0FDF4;
   font-weight: 600;
 }
 .comparison-table td {
@@ -873,9 +873,9 @@ section:nth-child(even) { background: var(--white); }
   margin-bottom: 12px;
 }
 .gen-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
-.tag-id { background: #EDE9FE; color: #5B21B6; }
+.tag-id { background: #D1FAE5; color: #065F46; }
 .tag-ood { background: #FEF3C7; color: #92400E; }
-.icon-math { background: #EDE9FE; color: #7C3AED; }
+.icon-math { background: #D1FAE5; color: #047857; }
 .icon-plan { background: #FEF3C7; color: #D97706; }
 .icon-qa   { background: #DCFCE7; color: #16A34A; }
 
@@ -883,15 +883,15 @@ section:nth-child(even) { background: var(--white); }
    BIBTEX / CITATION
    ============================================================ */
 .bibtex-section {
-  background: #0a0818 !important;
-  background-color: #0a0818 !important;
+  background: #021a12 !important;
+  background-color: #021a12 !important;
   padding: 80px 0;
 }
 
 /* Paper card */
 .cite-paper-card {
   background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(108,99,255,0.3);
+  border: 1px solid rgba(5,150,105,0.3);
   border-radius: 16px;
   padding: 28px 32px;
   margin-bottom: 28px;
@@ -933,13 +933,13 @@ section:nth-child(even) { background: var(--white); }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #a78bfa !important;
+  color: #6EE7B7 !important;
   font-size: 0.82rem;
   font-weight: 600;
   text-decoration: none;
   transition: color 0.2s;
 }
-.cite-paper-links a:hover { color: #c4b5fd !important; }
+.cite-paper-links a:hover { color: #A7F3D0 !important; }
 
 /* BibTeX label row */
 .bibtex-label {
@@ -968,7 +968,7 @@ section:nth-child(even) { background: var(--white); }
 .bibtex-block pre {
   font-family: var(--mono);
   font-size: 0.82rem;
-  color: #C4BFFF !important;
+  color: #6EE7B7 !important;
   line-height: 1.85;
   overflow-x: auto;
   white-space: pre;
@@ -988,8 +988,8 @@ section:nth-child(even) { background: var(--white); }
   font-family: var(--sans);
 }
 .copy-btn:hover {
-  background: rgba(108,99,255,0.3);
-  border-color: rgba(108,99,255,0.5);
+  background: rgba(5,150,105,0.3);
+  border-color: rgba(5,150,105,0.5);
   color: #ffffff !important;
 }
 
@@ -997,7 +997,7 @@ section:nth-child(even) { background: var(--white); }
    FOOTER
    ============================================================ */
 footer {
-  background: #07060f;
+  background: #060f0a;
   color: rgba(255,255,255,0.4);
   text-align: center;
   padding: 32px 24px;
